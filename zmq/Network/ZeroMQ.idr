@@ -41,6 +41,30 @@ close = primIO . prim__idris_zmq_close . sock
 
 
 export
+connect : (HasIO io) 
+       => Network.ZeroMQ.Socket 
+       -> Protocol
+       -> SocketAddress
+       -> Port
+       -> Network.ZeroMQ.Data.SocketType
+       -> io Bool
+connect socket protocol adress port type = do
+    return_code <- primIO $ prim__idris_zmq_connect (sock socket) (show protocol) (show adress) port
+    pure $ return_code == 0
+
+export
+bind : (HasIO io) 
+       => Network.ZeroMQ.Socket 
+       -> Protocol
+       -> SocketAddress
+       -> Port
+       -> Network.ZeroMQ.Data.SocketType
+       -> io Bool
+bind socket protocol adress port type = do
+    return_code <- primIO $ prim__idris_zmq_bind (sock socket) (show protocol) (show adress) port
+    pure $ return_code == 0
+
+export
 send : (HasIO io) 
    =>  Network.ZeroMQ.Socket 
    ->  String 

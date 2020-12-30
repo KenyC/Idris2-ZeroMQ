@@ -46,6 +46,21 @@ data ZMQError = ENOTSUP
               | EMTHREAD 
 
 public export 
+data Protocol = Tcp
+              | Ipc
+              | Inproc
+              | Pgm
+              | Vmci
+
+export
+Show Protocol where
+    show Tcp    = "tcp"
+    show Ipc    = "ipc"
+    show Inproc = "inproc"
+    show Pgm    = "pgm"
+    show Vmci   = "vmci"
+
+public export 
 Flags : Type
 Flags = Int
 
