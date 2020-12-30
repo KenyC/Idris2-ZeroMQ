@@ -38,3 +38,37 @@ socket context type = do
 export
 close : (HasIO io) => Network.ZeroMQ.Socket -> io () 
 close = primIO . prim__idris_zmq_close . sock
+
+
+export
+send : (HasIO io) 
+   =>  Network.ZeroMQ.Socket 
+   ->  String 
+   ->  Flags 
+   ->  io (Either ZMQError ())
+send socket message flags = do 
+    return_code <- primIO $ prim__idris_zmq_send (sock socket) message (toCode flags)
+    if return_code == 0
+        then pure $ Right ()
+        else case (fromCode {a=ZMQError} return_code) of
+            Just error => pure $ Left error
+            Nothing    => pure $ Right ()
+
+export
+recv : (HasIO io) 
+   =>  Network.ZeroMQ.Socket 
+   ->  Flags 
+   ->  io (Either ZMQError String)
+recv socket flags = do 
+    recv_response <- primIO $ prim__idris_zmq_recv (sock socket) (toCode flags)
+    return_code   <- primIO $ prim__idris_get_result_code recv_response
+
+    case (fromCode {a=ZMQError} return_code) of
+        Just error => do 
+            primIO $ prim__idris_free_recv_struct recv_response
+            pure $ Left error
+        Nothing    => do
+            payload <- primIO $ prim__idris_get_payload recv_response
+            primIO $ prim__idris_free_recv_struct recv_response
+            pure $ Right payload
+
