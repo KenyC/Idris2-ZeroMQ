@@ -1,0 +1,8 @@
+package idris2_zmq
+
+opts = "-p network"
+
+
+modules = Network.ZeroMQ,
+          Network.ZeroMQ.Data,
+          Network.ZeroMQ.Internal
