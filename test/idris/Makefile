@@ -1,15 +1,18 @@
 
-TESTS = Internal API
+TESTS = Internal HighLevel
 DEPS  = idris2_zmq network
 
 
 I ?= undef
 
 ifneq ($(I), undef)
-	EXTRA_FLAGS := -o $@
+	EXTRA_FLAGS = 
+	RUN_CMD     = @echo 
 else
-	EXTRA_FLAGS := 
+	EXTRA_FLAGS = -o $@
+	RUN_CMD     = build/exec/$@ 
 endif
 
 $(TESTS): 
-	idris2 $(EXTRA_FLAGS) $(@:%=Test%.idr) $(DEPS:%=-p % ) 
+	idris2 $(@:%=Test%.idr) $(EXTRA_FLAGS)  $(DEPS:%=-p % )
+	$(RUN_CMD)

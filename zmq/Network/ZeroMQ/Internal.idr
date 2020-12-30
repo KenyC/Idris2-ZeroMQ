@@ -37,13 +37,28 @@ prim__idris_zmq_bind : ZMQSock -> String -> String -> Int -> PrimIO Int
 export
 %foreign "C:idris_zmq_connect,libidris2_zmq"
 prim__idris_zmq_connect : ZMQSock -> String -> String -> Int -> PrimIO Int
--- int    idris_zmq_connect     (void* socket, char* protocol, char* hostname, int port);
+
+export
+%foreign "C:idris_zmq_send,libidris2_zmq"
+prim__idris_zmq_send : ZMQSock -> String -> Int -> PrimIO Int
+
+export
+%foreign "C:idris_zmq_recv,libidris2_zmq"
+prim__idris_zmq_recv : ZMQSock -> Int -> PrimIO ZMQRecvRep
+
+export
+%foreign "C:idris_get_result_code,libidris2_zmq"
+prim__idris_get_result_code : ZMQRecvRep -> PrimIO Int
+
+export
+%foreign "C:idris_get_payload,libidris2_zmq"
+prim__idris_get_payload : ZMQRecvRep -> PrimIO String
+
+export
+%foreign "C:idris_free_recv_struct,libidris2_zmq"
+prim__idris_free_recv_struct : ZMQRecvRep -> PrimIO ()
 
 
 
--- int   idris_get_result_code  (void* recv_result);
--- char* idris_get_payload      (void* recv_result);
--- void  idris_free_recv_struct (void* res_struct);
 
--- int    idris_zmq_send        (void* socket, char* message, int flags);
--- void*  idris_zmq_recv        (void* socket, int flags);
+

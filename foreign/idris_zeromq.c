@@ -125,6 +125,7 @@ int idris_zmq_send (void* socket, char* message_text, int flags) {
 	    NULL
 	);
 	if(rc != 0) {
+		printf("A\n");
 		error = zmq_errno();
 		zmq_msg_close(&message);
 	    return error;
@@ -133,6 +134,7 @@ int idris_zmq_send (void* socket, char* message_text, int flags) {
 	rc = zmq_msg_send (&message, socket, flags);
 	if (rc < 0)
 	{
+		printf("B\n");
 		error = zmq_errno();
 		zmq_msg_close(&message);
 	    return error;
@@ -140,6 +142,7 @@ int idris_zmq_send (void* socket, char* message_text, int flags) {
 
 	rc = zmq_msg_close(&message);
 	if(rc != 0) {
+		printf("C\n");
 	    return zmq_errno();
 	}
 	return 0;
