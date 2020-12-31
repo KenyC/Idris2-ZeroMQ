@@ -46,9 +46,8 @@ connect : (HasIO io)
        -> Protocol
        -> SocketAddress
        -> Port
-       -> Network.ZeroMQ.Data.SocketType
        -> io Bool
-connect socket protocol adress port type = do
+connect socket protocol adress port = do
     return_code <- primIO $ prim__idris_zmq_connect (sock socket) (show protocol) (show adress) port
     pure $ return_code == 0
 
