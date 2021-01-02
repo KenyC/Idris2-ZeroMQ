@@ -1,3 +1,5 @@
+include ../config.mk
+
 
 FLAGS = -shared -fPIC
 GCC   = gcc
@@ -10,7 +12,7 @@ H_FILES  = $(BASENAME:%=%.h)
 
 
 
-DESTINATION_LIB = ~/.idris2/idris2-0.2.1/lib/
+DESTINATION_LIB = $(IDRIS_FOLDER)lib/
 
 all: $(SO_FILE)
 	cp $(SO_FILE) $(DESTINATION_LIB)
