@@ -1,8 +1,12 @@
 
+
 import Network.ZeroMQ
 import Network.ZeroMQ.Data
 import Network.ZeroMQ.Internal
+--
 import Network.Socket.Data 
+--
+import Data.Strings
 
 address :  SocketAddress
 address = IPv4Addr 127 0 0 1
@@ -23,13 +27,13 @@ main = withContext $ \context => do
             putStrLn "Socket Created"
             rc <- connect sock protocol address port
             when (not rc) $ putStrLn "Ohoh"
-            send sock "Some tremendously interesting message" 0
-            maybe_message <- recv sock 0
-            case maybe_message of
+            sendMany sock ["Some tremendously interesting message", "of great length"] []
+            maybe_messages <- recvMany sock []
+            case maybe_messages of
                 Left  error   => putStrLn "That is a problem"
-                Right message => putStrLn $ "Server says:" ++ message
-            putStrLn "Socket Connected"
+                Right message => putStrLn $ "Server says:" ++ (fastConcat message)
             close sock
+            putStrLn "Socket Closed"
 
         -- if rc /= 0
         --     then putStrLn "Something went wrong!"

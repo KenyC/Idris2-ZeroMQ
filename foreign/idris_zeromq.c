@@ -190,3 +190,14 @@ void* idris_zmq_recv(void* socket, int flags) {
 	result->result_code = 0;
 	return result;
 }
+
+/**************************************
+OPTIONS
+***************************************/
+
+size_t size_bool = sizeof(int);
+int idris_more_to_receive(void* socket) {
+	int to_return;
+	zmq_getsockopt(socket, ZMQ_RCVMORE, &to_return, &size_bool);
+	return to_return;
+}

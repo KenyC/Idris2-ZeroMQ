@@ -45,6 +45,9 @@ data ZMQError = ENOTSUP
               | ETERM 
               | EMTHREAD 
 
+
+
+
 public export 
 data Protocol = Tcp
               | Ipc
@@ -61,16 +64,44 @@ Show Protocol where
     show Vmci   = "vmci"
 
 public export 
+data Flag  = ZMQ_DontWait
+           | ZMQ_SndMore
+
+public export
 Flags : Type
-Flags = Int
+Flags = List Flag
+
+-- export 
+-- FromCode Flags where
+--     fromCode = Just . id
 
 export 
-FromCode Flags where
-    fromCode = Just . id
+ToCode Flag where
+    toCode ZMQ_DontWait = 1
+    toCode ZMQ_SndMore  = 2
+
+
+
+bitwise_or : Int -> Int -> Int
+bitwise_or 0 y = y
+bitwise_or x 0 = x
+bitwise_or x y = (max x_mod_2 y_mod_2) + 2 * bitwise_or (x_div_2) (y_div_2)
+                 where
+                      x_mod_2 : Int
+                      x_mod_2 = x `mod` 2 
+                      y_mod_2 : Int
+                      y_mod_2 = y `mod` 2 
+                      x_div_2 : Int
+                      x_div_2 = x `div` 2 
+                      y_div_2 : Int
+                      y_div_2 = y `div` 2 
+
 
 export 
 ToCode Flags where
-    toCode = id
+    toCode = (foldr bitwise_or 0) . (map toCode)
+
+
 
 export
 ToCode Network.ZeroMQ.Data.SocketType where

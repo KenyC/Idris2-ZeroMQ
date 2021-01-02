@@ -42,6 +42,11 @@ int    idris_zmq_send        (void* socket, char* message, int flags);
 void*  idris_zmq_recv        (void* socket, int flags);
 
 
+/**************************************
+OPTIONS
+***************************************/
+
+int idris_more_to_receive   (void* socket);
 
 
 #endif

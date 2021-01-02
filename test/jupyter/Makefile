@@ -1,22 +1,19 @@
 
-PROGRAMS  =server client
-LIBRARIES =zmq
+PROGRAMS  =server
+LIBRARIES =zmq pthread
 
 DONE = @echo "> Done" with $@
 
 all: $(PROGRAMS)
 	@echo === All done! ===
 
-rebuild: clean all
+kernel: server
+	jupyter console --kernel=i2dris-test
 
-server: server.c
-	gcc $@.c -o $@ -l$(LIBRARIES)
+
+server: server.c server.h
+	gcc $< deps/yyjson.c  -o $@  $(LIBRARIES:%= -l% )
 	$(DONE)
-
-client: client.c
-	gcc $@.c -o $@ -l$(LIBRARIES)
-	$(DONE)
-
 
 clean:
 	rm -f $(PROGRAMS)

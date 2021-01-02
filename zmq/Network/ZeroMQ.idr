@@ -1,8 +1,12 @@
 module Network.ZeroMQ
 
+import Network.Socket.Data 
+--
+import Control.Monad.Either
+
 import Network.ZeroMQ.Internal
 import Network.ZeroMQ.Data
-import Network.Socket.Data 
+
 
 export
 record Context where
@@ -57,9 +61,8 @@ bind : (HasIO io)
        -> Protocol
        -> SocketAddress
        -> Port
-       -> Network.ZeroMQ.Data.SocketType
        -> io Bool
-bind socket protocol adress port type = do
+bind socket protocol adress port = do
     return_code <- primIO $ prim__idris_zmq_bind (sock socket) (show protocol) (show adress) port
     pure $ return_code == 0
 
@@ -95,3 +98,37 @@ recv socket flags = do
             primIO $ prim__idris_free_recv_struct recv_response
             pure $ Right payload
 
+
+export
+moreToReceive : (HasIO io) => Network.ZeroMQ.Socket -> io Bool
+moreToReceive socket = do
+  result <- primIO $ prim__idris_more_to_receive $ sock socket
+  pure $ result /= 0
+
+
+export
+recvMany : (HasIO io) 
+        => Network.ZeroMQ.Socket 
+        -> Flags 
+        -> io (Either ZMQError (List String))
+recvMany socket flags = runEitherT {m=io} $ do
+                          firstPart <- MkEitherT $ recv socket flags  
+                          more      <- moreToReceive socket
+
+                          if more
+                            then do
+                                (firstPart::) <$> (MkEitherT $ recvMany socket flags)
+                            else pure $ [firstPart]  
+export
+sendMany : (HasIO io) 
+        => Network.ZeroMQ.Socket 
+        -> List String 
+        -> Flags
+        -> io (Either ZMQError ())
+
+sendMany socket []                 flags = pure $ Right ()
+sendMany socket [message]          flags = send socket message flags
+sendMany socket (message::strings) flags = runEitherT {m=io} $ do
+                                                firstPart <- MkEitherT $ send socket message $ ZMQ_SndMore :: flags 
+                                                MkEitherT $ sendMany socket strings flags
+-- sendMany socket (message::(mesage2::strings)) flags = send socket message flags

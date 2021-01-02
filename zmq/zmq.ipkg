@@ -1,4 +1,4 @@
-package idris2_zmq
+package zmq
 
 opts = "-p network"
 

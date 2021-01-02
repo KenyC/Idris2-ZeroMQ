@@ -58,6 +58,10 @@ export
 %foreign "C:idris_free_recv_struct,libidris2_zmq"
 prim__idris_free_recv_struct : ZMQRecvRep -> PrimIO ()
 
+export
+%foreign "C:idris_more_to_receive,libidris2_zmq"
+prim__idris_more_to_receive : ZMQSock -> PrimIO Int
+
 
 
 

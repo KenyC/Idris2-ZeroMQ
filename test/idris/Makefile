@@ -1,6 +1,6 @@
 
-TESTS = Internal HighLevel
-DEPS  = idris2_zmq network
+TESTS = Internal HighLevelClient HighLevelServer
+DEPS  = zmq network
 
 
 I ?= undef
@@ -15,4 +15,5 @@ endif
 
 $(TESTS): 
 	idris2 $(@:%=Test%.idr) $(EXTRA_FLAGS)  $(DEPS:%=-p % )
-	$(RUN_CMD)
+	@echo "> All done!"
+	@$(RUN_CMD)

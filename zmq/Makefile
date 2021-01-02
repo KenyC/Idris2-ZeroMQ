@@ -1,4 +1,4 @@
-PACKAGE = idris2_zmq
+PACKAGE = zmq
 IDRIS2  = idris2
 RM      = rm
 
