@@ -26,10 +26,10 @@ main = withContext $ \context => do
             sock <- socket context ZMQ_REP
             putStrLn "Socket Created"
             rc <- bind sock protocol address port
-            when (not rc) $ putStrLn "Ohoh"
+            when (not rc) $ putStrLn "Oh no, an error has occured in binding."
             maybe_messages <- recvMany sock []
             case maybe_messages of
-                Left  error   => putStrLn "That is a problem"
+                Left  error   => putStrLn "Oh no, an error has occured in reception!"
                 Right message => putStrLn $ "Client says:" ++ (fastConcat message)
             sendMany sock ["I have ", "received your beautiful message"] []
             close sock
